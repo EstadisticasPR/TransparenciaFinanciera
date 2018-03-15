@@ -1,0 +1,225 @@
+## app.R ##
+library(shiny)
+library(tidyverse)
+library(shinyjs)
+library(shinydashboard)
+library(DT)
+
+## UI App Header
+header <- dashboardHeader(title = tags$a(href='https://estadisticas.pr',
+                                         tags$img(src='iepr_esp.png', 
+                                                  height="100%",
+                                                  width="50%")))
+
+## UI App Sidebar
+sidebar <- dashboardSidebar(
+  sidebarMenu(
+    menuItem("Home", tabName = "home", icon = icon("home")),
+    menuItem("Top Spending", tabName = "top", icon = icon("money")), 
+    menuItem("Visualizaciones", tabName = "viz", icon = icon("signal"))
+  )
+)
+
+## Spanish Description about the project
+spanish_about_short = "El Instituto de Estadísticas de Puerto Rico es 
+una entidad gubernamental autónoma creada mediante la Ley Núm. 209-2003 
+para coordinar el servicio de producción de estadísticas del Gobierno 
+del Estado Libre Asociado de Puerto Rico y asegurar que los sistemas de 
+recopilación de datos y estadísticas -en los que se basan las políticas 
+públicas- estén completos, sean confiables y de acceso rápido y universal.
+
+Existe una gran necesidad y reclamo para mejorar la accesibilidad y 
+la calidad de la información financiera de los gastos del Gobierno.
+
+A través del portal de Transparencia Financiera, el Instituto de 
+Estadísticas persigue lograr la coordinación así como la participación de 
+todas las entidades gubernamentales para que provean la información de sus 
+gastos. Esto con el fin de impulsar una cultura de apertura en la 
+administración pública en Puerto Rico.
+
+Por este medio, el Instituto de Estadísticas invita a todas las entidades 
+gubernamentales a sumarse a este esfuerzo, el cual no requiere recursos ni 
+conocimiento técnico, ni tampoco compromete recursos tecnológicos 
+existentes de las entidades.
+
+Al momento, las siguientes entidades públicas han respondido a este llamado:
+
+Instituto de Cultura Puertorriqueña: desde año fiscal 2014-15
+
+Instituto de Estadísticas de Puerto Rico: desde año fiscal 2007-08"
+
+## English Description about the proyect
+english_about_short = "The Puerto Rico Institute of Statistics (PRIS) is an 
+autonomous public entity created by Puerto Rico Act No. 209-2003, as amended, 
+with the mission of coordinating the statistical production of the Government
+of Puerto Rico and to ensure that the data collection systems produce 
+comprehensive and reliable statistics that are timely and universally 
+accessible.
+
+There is a great need and demand for improvements to the accessibility and 
+quality of the financial information of the Government of Puerto Rico.
+
+Through the Financial Transparency site, PRIS seeks to achieve the coordination
+and participation of all public entities of the Government of Puerto Rico, in 
+order to promote a culture of openness in the public administration of Puerto Rico.
+
+PRIS invites all public entities of the Government of Puerto Rico to join this effort, 
+which does not cost anything, nor require specialized skills, 
+nor commit existing technological resources of the entities.
+
+The following public entities have joined this effort thus far:
+
+Institute of Puerto Rican Culture: from FY 2014-15 onward
+
+Puerto Rico Institute of Statistics from FY 2007-08 onward."
+
+## UI App Body
+body <- dashboardBody(
+  useShinyjs(),
+  tabItems(
+    ## Home UI Content
+    tabItem(tabName = "home", 
+            h2("Transparencia Financiera"),
+            
+            ## Summaries
+            fluidRow(
+              column(1),
+              infoBoxOutput("total_spending"),
+              column(2),
+              infoBoxOutput("num_transactions")
+              ),
+            
+            ## Full Comparison Graph
+            fluidRow(
+              column(1),
+              column(1, 
+                     actionButton("full_graph_bttn", 
+                                  "Mostrar más años"))),
+            
+            fluidRow(
+              p(),
+              column(1),
+              column(10, 
+                     hidden(
+                       plotOutput('full_graph_plot')
+                    )
+              ),
+              p()
+            ),
+            
+            ## Text Descriptions
+            fluidRow(
+            column(1),
+            column(4, 
+                   h3("Sobre El Proyecto"),
+                   p(spanish_about_short)),
+            column(2),
+            column(4,
+                   h3("About The Project"),
+                   p(english_about_short)),
+            column(1)
+            )
+    ),
+    
+    ## Top UI Content
+    tabItem(tabName = "top",
+            h2("Top Spending"),
+            fluidRow(
+                     infoBoxOutput("top_agency"),
+                     infoBoxOutput("top_type"),
+              column(2, 
+                     h2("Person"))
+            ),
+            fluidRow(
+              column(4, DT::dataTableOutput("agency_table")),
+              column(4, DT::dataTableOutput("account_table"))
+            )
+    ),
+    
+    ## Viz UI Content
+    tabItem(tabName = "viz",
+            h2("Visualization"))
+  )
+)
+
+ui <- dashboardPage(skin="green", header, sidebar, body)
+
+
+server <- function(input, output, session) {
+  
+  data <- read.csv("transparencia.csv", na.strings = c("", "NA"))
+  ######################## HOME TAB ##################################
+  ## InfoBox total gasto anual
+  total_spent = sum(data$amount[data$fiscal_year == 2018], na.rm = TRUE)
+  s_total_spent = paste0("$", round(total_spent/1e6, 3), " Millones")
+  
+  output$total_spending <- renderInfoBox({
+    infoBox("Gastos Totales en el 2018", s_total_spent, 
+            icon = icon("money"), color = "purple")
+    })
+  
+  ##InfoBox total de transacciones
+  trans_num = length(data$amount[data$fiscal_year == 2018])
+  
+  output$num_transactions <- renderInfoBox({
+    infoBox("Numero de Transacciones", trans_num, 
+            icon = icon("users"), color = "purple")
+  })
+
+  ## Full Graph Comparison
+  observeEvent(input$full_graph_bttn, {toggle("full_graph_plot")})
+  
+  output$full_graph_plot <- renderPlot({
+    ggplot(data = subset(data, !is.na(fiscal_year | amount))) + 
+             geom_bar(mapping=aes(x = fiscal_year,
+                                  y = amount), 
+                                  stat = "identity") +
+    labs(x = "Año Fiscal",
+         y = "Cantidad Total Anual",
+         title = "Gasto Anual Total",
+         subtitle = "IEPR & ICP") +
+      theme_minimal()
+  })
+  
+  ############ TOP TAB #####################
+  
+  # Top Agency Spending InfoBox
+  new_data <- data[order(-data$amount),]
+  top_ag <- new_data$department[1]
+  amnt_ag <- round(sum(data$amount[data$department == top_ag])/1e6,3)
+  
+  output$top_agency <- renderInfoBox({
+    infoBox("Agencia", paste0(top_ag,": $", amnt_ag, " Millones"))
+  })
+  
+  # Top Agency Spending Data Table
+  agency_data <- subset(new_data, select = c("department","amount"))
+
+  agency_data <- aggregate(amount~department, agency_data, sum)
+  agency_data$amount = agency_data$amount/1e6
+  
+  output$agency_table <- DT::renderDataTable({
+    datatable(agency_data, colnames = c("Agencia", "Cantidad (Millones)"))
+  })
+  
+  
+  # Type of Spending Data Table
+  top_tp <- new_data$account[1]
+  amnt_tp <- round(sum(data$amount[data$account == top_tp])/1e6,3)
+  
+  output$top_type <- renderInfoBox({
+    infoBox("Tipo de Cuenta", paste0(top_tp, ": $", amnt_tp, " Millones"))
+  })
+
+  # Type of Spending Data Table
+  account_data <- subset(new_data, select = c("account","amount"))
+  
+  account_data <- aggregate(amount~account, account_data, sum)
+  account_data$amount <- account_data$amount/1e6
+  
+  output$account_table <- DT::renderDataTable({
+    datatable(account_data, colnames = c("Tipo de Cuenta", "Cantidad (Millones)"))
+  })
+}
+
+shinyApp(ui, server)

@@ -1,0 +1,18 @@
+# Load data
+data <- read.csv("https://data.pr.gov/resource/hzmp-w2nf.csv")
+
+# Packages
+library(tidyverse)
+
+# Data Summary
+summary(data)
+
+# Data Viz
+ggplot(data = data) +
+  geom_bar(mapping = aes(x = account, y = amount), stat="identity")
+
+ggplot(data = data) + 
+  geom_bar(mapping = aes(x=fiscal_year, y = amount), stat="identity")
+
+ggplot(data = data) +
+  geom_histogram(mapping = aes(x=fiscal_year_period), bins = 12)+ theme_minimal()

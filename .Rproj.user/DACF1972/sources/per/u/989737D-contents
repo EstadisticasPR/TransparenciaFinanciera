@@ -1,0 +1,7 @@
+library("RCurl")
+download.file("https://data.pr.gov/resource/hzmp-w2nf.csv?$limit=500000", "transparencia.csv")
+data <- read.csv("transparencia.csv")
+sum(data$amount)
+
+library("OData")
+downloadResourceCsv("https://data.pr.gov/resource/hzmp-w2nf.csv", separator = ",")
