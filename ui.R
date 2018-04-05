@@ -1,10 +1,10 @@
 library(shiny)
-library(tidyverse)
 library(shinyjs)
+library(shinyalert)
 library(shinydashboard)
+library(tidyverse)
 library(DT)
 library(plotly)
-library(shinyalert)
 
 ## UI App Header
 header <- dashboardHeader(title = tags$a(href='https://estadisticas.pr',
@@ -16,10 +16,10 @@ header <- dashboardHeader(title = tags$a(href='https://estadisticas.pr',
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Home", tabName = "home", icon = icon("home")),
-    menuItem("Top Spending", tabName = "top", icon = icon("money")), 
     menuItem("Agencias", tabName = "agencias"), 
     menuItem("Cuentas", tabName = "cuentas"),
     menuItem("Personas", tabName = "personas"),
+    menuItem("Explorador de Datos", tabName = "explorer"),
     uiOutput("year_slider")
   )
 )
@@ -94,23 +94,25 @@ body <- dashboardBody(
               infoBoxOutput("num_transactions")
             ),
             
-            ## Full Comparison Graph
+            # Full Comparison Graph
             fluidRow(
               column(1),
-              column(1, 
-                     actionButton("full_graph_bttn", 
-                                  "Mostrar más años"))),
+              column(1,
+                     actionButton("full_graph_bttn",
+                                  "Mostrar más años"))
+            ),
             
             fluidRow(
               p(),
-              column(1),
-              column(10, 
+              column(2),
+              column(8,
                      hidden(
                        plotOutput('full_graph_plot')
                      )
               ),
               p()
             ),
+
             
             ## Text Descriptions
             fluidRow(
@@ -125,17 +127,6 @@ body <- dashboardBody(
               column(1)
             )
     ),
-    
-    ## Top UI Content
-    tabItem(tabName = "top",
-            h2("Top Spending"),
-            fluidRow(
-              
-              column(4, DT::dataTableOutput("person_table"))
-            )
-    ),
-    
-    
     tabItem(tabName = "agencias",
             h2("Datos por Agencia"),
             fluidRow(
@@ -158,7 +149,7 @@ body <- dashboardBody(
               column(8,  DT::dataTableOutput("agency_table")),
               column(2)
             )
-            ),
+    ),
     tabItem(tabName = "cuentas", 
             h3("Datos por tipo de Cuenta"),
             fluidRow(
@@ -181,7 +172,7 @@ body <- dashboardBody(
               column(8, DT::dataTableOutput("account_table")),
               column(2)
             )
-            ),
+    ),
     tabItem(tabName = "personas",
             h3("Datos por Persona"), 
             fluidRow(
@@ -203,7 +194,9 @@ body <- dashboardBody(
               column(2),
               column(8, DT::dataTableOutput("person_table"))
             )
-            ) 
+    ),
+    tabItem(tabName = "explorer",
+            h3("Data Explorer"))
   )
 )
 

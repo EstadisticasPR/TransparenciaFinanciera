@@ -1,17 +1,18 @@
 library(shiny)
-library(tidyverse)
 library(shinyjs)
+library(shinyalert)
 library(shinydashboard)
+library(tidyverse)
 library(DT)
 library(plotly)
-library(shinyalert)
+
 
 server <- function(input, output, session) {
   
-  shinyalert("Transparencia Financiera", 
-             "Transparencia Financiera es parte de nuestro compromiso con mejorar la transparencia del Gobierno de Puerto Rico. Al momento, provee información detallada de las transacciones del Instituto de Cultura Puertorriqueña y del Instituto de Estadísticas de Puerto Rico en distintos años. Esto con la intención de servir de ejemplo y motivar a todas las entidades públicas a hacer lo propio.", 
+  shinyalert("Transparencia Financiera",
+             "Transparencia Financiera es parte de nuestro compromiso con mejorar la transparencia del Gobierno de Puerto Rico. Al momento, provee información detallada de las transacciones del Instituto de Cultura Puertorriqueña y del Instituto de Estadísticas de Puerto Rico en distintos años. Esto con la intención de servir de ejemplo y motivar a todas las entidades públicas a hacer lo propio.",
              type = "info", confirmButtonText = "Excelente", closeOnClickOutside = TRUE, confirmButtonCol = "#9BC337")
-  
+
   data <- read.csv("transparencia.csv", na.strings = c("", "NA"))
   
   ### Sidebar ####
@@ -22,11 +23,10 @@ server <- function(input, output, session) {
   ######################## HOME TAB ##################################
   
   ## InfoBox total gasto anual
-  
+
   output$total_spending <- renderInfoBox({
     total_spent = sum(data$amount[data$fiscal_year == input$year], na.rm = TRUE)
     s_total_spent = paste0("$", round(total_spent/1e6, 3), " Millones")
-    
     infoBox(paste("Gastos Totales en el ", input$year), s_total_spent, 
             icon = icon("money"), color = "purple")
   })
@@ -44,9 +44,9 @@ server <- function(input, output, session) {
   observeEvent(input$full_graph_bttn, {toggle("full_graph_plot")})
   
   output$full_graph_plot <- renderPlot({
-    ggplot(data = subset(data, !is.na(fiscal_year | amount))) + 
+    ggplot(data = subset(data, !is.na(fiscal_year | amount))) +
       geom_bar(mapping=aes(x = fiscal_year,
-                           y = amount), 
+                           y = amount),
                stat = "identity") +
       labs(x = "Año Fiscal",
            y = "Cantidad Total Anual",
