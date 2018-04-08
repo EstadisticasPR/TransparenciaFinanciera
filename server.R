@@ -36,7 +36,7 @@ server <- function(input, output, session) {
   output$num_transactions <- renderInfoBox({
     trans_num = length(data$amount[data$fiscal_year == input$year])
     trans_num = paste0(trans_num, " Transacciones")
-    infoBox("Numero de Transacciones", trans_num, 
+    infoBox(paste0("Numero de Transacciones en el ", input$year), trans_num, 
             icon = icon("users"), color = "purple")
   })
   
@@ -151,17 +151,18 @@ server <- function(input, output, session) {
   ################ Viz Tab ##########################
   
   # Agency per Year
-  year_amount = aggregate(amount~fiscal_year+department, data, sum)
-  year_amount$amount = year_amount$amount/1e6
   
-  agency_yearly <- ggplot(data = year_amount) +
-    geom_line(mapping = aes(x = fiscal_year, y = amount, colour = department)) +
-    labs(x = "Año Fiscal",
-         y = "Cantidad en Millones de $",
-         title = "Gasto Agencial Anual", 
-         colour = "Agencia")
   
   output$agency_year_plot <- renderPlotly({
+    year_amount = aggregate(amount~fiscal_year+department, data, sum)
+    year_amount$amount = year_amount$amount/1e6
+    
+    agency_yearly <- ggplot(data = year_amount) +
+      geom_line(mapping = aes(x = fiscal_year, y = amount, colour = department)) +
+      labs(x = "Año Fiscal",
+           y = "Cantidad en Millones de $",
+           title = "Gasto Agencial Anual", 
+           colour = "Agencia")
     ggplotly(agency_yearly)
   })
   
@@ -199,7 +200,7 @@ server <- function(input, output, session) {
   
   qtr_amount = aggregate(amount~qtr+department, month_amount, sum)
   
-  agency_qtr <- ggplot(data = qtr_amount) +
+  agency_qtr_gr <- ggplot(data = qtr_amount) +
     geom_line(mapping = aes(x = qtr, y = amount, colour = department, group = 1)) +
     theme(
       axis.text.x = element_blank(),
@@ -210,7 +211,7 @@ server <- function(input, output, session) {
          colour = "Agencia")
   
   output$agency_qtr_plot <- renderPlotly({
-    ggplotly(agency_qtr)
+    ggplotly(agency_qtr_gr)
   })
   
   # Agency per Agency
@@ -340,6 +341,7 @@ server <- function(input, output, session) {
       axis.ticks = element_blank())
   
   output$account_account_plot <- renderPlotly({
+    
     ggplotly(acc_acc_plot)
   })
   
@@ -455,5 +457,23 @@ server <- function(input, output, session) {
     ggplotly(ppl_ppl_plt)
   })
   
-  
+  # output$single_var_1 <- renderPlotly({
+  #   data$fiscal_year <- as.factor(data$fiscal_year)
+  #   data$fiscal_year_period <- as.factor(data$fiscal_year_period)
+  #   
+  #   if (input$x == 'account'){
+  #     data %>%
+  #       dplyr::group_by(account, department, fiscal_year) %>%
+  #       select(department, amount, account, fiscal_year) %>%
+  #       summarize(size = sum(amount))
+  # %>%
+  #       dplyr::select(account, size, amount, department, fiscal_year, fiscal_year_period, name) %>%
+  #       dplyr::arrange(desc(size)) %>%
+  #       top_n(10)
+  #     
+  #     p <- ggplot(data = data) + 
+  #       geom_bar(mapping = aes(x = account, y = size, fill = as.name(input$z)), stat = "identity")
+  #     ggplotly(p)
+  #   }
+  #})
 }

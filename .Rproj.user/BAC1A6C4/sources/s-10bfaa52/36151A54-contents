@@ -1,8 +1,0 @@
-## Viz Tab 
-
-Explore all the dataset
-  - Scatterplot if both variables are continuous
-  - Barplot if independent is discrete and dependent continuous
-  - Histogram to explore one variable
-  
-Make it available to subset by year

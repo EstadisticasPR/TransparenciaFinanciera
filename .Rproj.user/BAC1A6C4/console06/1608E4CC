@@ -1,3 +1,64 @@
 ]0;/home/administrator/Transparencia_Financiera_PR]0;administrator@Transparencia-Server: ~/Transparencia_Financiera_PR[01;32madministrator@Transparencia-Server[00m:[01;34m~/Transparencia_Financiera_PR[00m$ [K]0;administrator@Transparencia-Server: ~/Transparencia_Financiera_PR[01;32madministrator@Transparencia-Server[00m:[01;34m~/Transparencia_Financiera_PR[00m$ ls
 app.R  transparencia.csv  Transparencia_Financiera_PR.Rproj  [0m[01;34mwww[0m
-]0;/home/administrator/Transparencia_Financiera_PR]0;administrator@Transparencia-Server: ~/Transparencia_Financiera_PR[01;32madministrator@Transparencia-Server[00m:[01;34m~/Transparencia_Financiera_PR[00m$ 
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ [K]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git push
+error: cannot run rpostback-askpass: No such file or directory
+Username for 'https://github.com': ian-flores
+error: cannot run rpostback-askpass: No such file or directory
+Password for 'https://ian-flores@github.com': 
+Everything up-to-date
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git commit -m "Ian[K[K[K4/5/18 IEPR Work"
+On branch master
+Your branch is up-to-date with 'origin/master'.
+Changes not staged for commit:
+	[31mdeleted:    .RData[m
+	[31mdeleted:    .Rhistory[m
+	[31mmodified:   .Rproj.user/BAC1A6C4/console06/1608E4CC[m
+	[31mmodified:   .Rproj.user/BAC1A6C4/console06/1608E4CC.env[m
+	[31mmodified:   .Rproj.user/BAC1A6C4/console06/INDEX001[m
+	[31mmodified:   .Rproj.user/BAC1A6C4/sources/prop/INDEX[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/36151A54[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/36151A54-contents[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/785FD127[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/785FD127-contents[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/9A761601[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/9A761601-contents[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/DAE6E4BA[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/DAE6E4BA-contents[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/E7E62A24[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/E7E62A24-contents[m
+	[31mdeleted:    .Rproj.user/BAC1A6C4/sources/s-10bfaa52/lock_file[m
+	[31mmodified:   .Rproj.user/shared/notebooks/paths[m
+	[31mdeleted:    app.R[m
+	[31mmodified:   server.R[m
+	[31mmodified:   ui.R[m
+
+Untracked files:
+	[31m.gitignore[m
+	[31mamount_fiscal.png[m
+
+no changes added to commit
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git add --all[K[K[K[K[Kserver.R ui.R 
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git add server.R ui.R commit -m "4/5/18 IEPR Work"
+[master ca55240] 4/5/18 IEPR Work
+ 2 files changed, 26 insertions(+), 33 deletions(-)
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git [K[K[K[Kgit push
+error: cannot run rpostback-askpass: No such file or directory
+Username for 'https://github.com': ian-flores
+error: cannot run rpostback-askpass: No such file or directory
+Password for 'https://ian-flores@github.com': 
+remote: Invalid username or password.
+fatal: Authentication failed for 'https://github.com/ian-flores/TransparenciaFinanciera.git/'
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git push
+error: cannot run rpostback-askpass: No such file or directory
+Username for 'https://github.com': uab   ian-flores
+error: cannot run rpostback-askpass: No such file or directory
+Password for 'https://ian-flores@github.com': 
+Counting objects: 4, done.
+Delta compression using up to 4 threads.
+Compressing objects:  25% (1/4)   Compressing objects:  50% (2/4)   Compressing objects:  75% (3/4)   Compressing objects: 100% (4/4)   Compressing objects: 100% (4/4), done.
+Writing objects:  25% (1/4)   Writing objects:  50% (2/4)   Writing objects:  75% (3/4)   Writing objects: 100% (4/4)   Writing objects: 100% (4/4), 605 bytes | 0 bytes/s, done.
+Total 4 (delta 3), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/3)   [Kremote: Resolving deltas:  33% (1/3)   [Kremote: Resolving deltas:  66% (2/3)   [Kremote: Resolving deltas: 100% (3/3)   [Kremote: Resolving deltas: 100% (3/3), completed with 3 local objects.[K
+To https://github.com/ian-flores/TransparenciaFinanciera.git
+   dc07ca1..ca55240  master -> master
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ 

@@ -16,10 +16,10 @@ header <- dashboardHeader(title = tags$a(href='https://estadisticas.pr',
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Home", tabName = "home", icon = icon("home")),
-    menuItem("Agencias", tabName = "agencias"), 
-    menuItem("Cuentas", tabName = "cuentas"),
-    menuItem("Personas", tabName = "personas"),
-    menuItem("Explorador de Datos", tabName = "explorer"),
+    menuItem("Agencias", tabName = "agencias", icon = icon("university")), 
+    menuItem("Cuentas", tabName = "cuentas", icon = icon("dollar")),
+    menuItem("Personas", tabName = "personas", icon = icon("users")),
+    menuItem("Explorador de Datos", tabName = "explorer", icon = icon("signal")),
     uiOutput("year_slider")
   )
 )
@@ -137,10 +137,10 @@ body <- dashboardBody(
             fluidRow(
               column(2),
               tabBox(
-                tabPanel("Tab 1", plotlyOutput("agency_year_plot")),
-                tabPanel("Tab 2", plotlyOutput("agency_month_plot")),
-                tabPanel("Tab 3", plotlyOutput("agency_qtr_plot")),
-                tabPanel("Tab 4", plotlyOutput("agency_agency_plot")),
+                tabPanel("Gasto Agencial Anual", plotlyOutput("agency_year_plot")),
+                tabPanel("Gasto Agencial Mensual", plotlyOutput("agency_month_plot")),
+                tabPanel("Gasto Agencial por Trimestre", plotlyOutput("agency_qtr_plot")),
+                tabPanel("Gasto Agencial Total", plotlyOutput("agency_agency_plot")),
                 width = 8),
               column(2)
             ),
@@ -186,7 +186,7 @@ body <- dashboardBody(
                 tabPanel("Tab 1", plotlyOutput("person_year_plot")),
                 tabPanel("Tab 2", plotlyOutput("person_month_plot")),
                 tabPanel("Tab 3", plotlyOutput("person_qtr_plot")),
-                tabPanel("Tab 4", plotlyOutput("person_person_plot")),
+                tabPanel("Tab 4", plotlyOutput("person_person_type")),
                 width = 8),
               column(2)
             ),
@@ -196,7 +196,45 @@ body <- dashboardBody(
             )
     ),
     tabItem(tabName = "explorer",
-            h3("Data Explorer"))
+            h3("Data Explorer"),
+            fluidRow(
+              column(4, selectInput("x", "Eje de X", 
+                                    c("Tipo de Cuenta" = "account",
+                                      "Cantidad" = "amount",
+                                      "Agencia" = "department",
+                                      "A~o Fiscal" = "fiscal_year",
+                                      "Periodo del A~o Fiscal" = "fiscal_year_period",
+                                      "Nombre" = "name"), selected = "account")
+                     ),
+              column(4, selectInput("y", "Eje de Y", 
+                                    c("Tipo de Cuenta" = "account",
+                                      "Cantidad" = "amount",
+                                      "Agencia" = "department",
+                                      "A~o Fiscal" = "fiscal_year",
+                                      "Periodo del A~o Fiscal" = "fiscal_year_period",
+                                      "Nombre" = "name"), selected = "amount")
+                     ),
+              column(4, selectInput("z", "Eje de Z",
+                                    c("Tipo de Cuenta" = "account",
+                                      "Cantidad" = "amount",
+                                      "Agencia" = "department",
+                                      "A~o Fiscal" = "fiscal_year",
+                                      "Periodo del A~o Fiscal" = "fiscal_year_period",
+                                      "Nombre" = "name"), selected = "fiscal_year")
+                     )
+            ),
+            fluidRow(
+              column(1),
+              column(4, plotlyOutput("single_var_1")),
+              column(2),
+              column(4, plotlyOutput("single_var_2")),
+              column(1)
+            ),
+            fluidRow(
+              column(2),
+              column(8, plotlyOutput("double_var_12")),
+              column(2)
+            ))
   )
 )
 
