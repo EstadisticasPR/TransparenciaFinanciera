@@ -1,3 +1,5 @@
+
+## Libraries ####
 library(shiny)
 library(shinyjs)
 library(shinyalert)
@@ -15,12 +17,23 @@ server <- function(input, output, session) {
 
   data <- read.csv("transparencia.csv", na.strings = c("", "NA"))
   
+  
   ### Sidebar ####
+  
   output$year_slider <- renderUI({
-    sliderInput("year", "Año", min = min(data$fiscal_year), max = max(data$fiscal_year), value = max(data$fiscal_year), sep = "", step = 1)
+    sliderInput("year", "Año (Year)", min = min(data$fiscal_year), max = max(data$fiscal_year), value = max(data$fiscal_year), sep = "", step = 1)
   })
   
   ######################## HOME TAB ##################################
+  
+  ## Progress Bar
+  output$progress_bar <- renderValueBox({
+    pctg = length(unique(data$department[data$fiscal_year == input$year], na.rm = TRUE))
+    valueBox(paste0(round(pctg/131, 3), " % ", "(",(pctg), ") "), 
+             paste0("Porcentaje de Participación Agencial para el ", input$year), 
+             icon = icon("university"), 
+             color = "teal")
+  })
   
   ## InfoBox total gasto anual
 
@@ -44,20 +57,26 @@ server <- function(input, output, session) {
   observeEvent(input$full_graph_bttn, {toggle("full_graph_plot")})
   
   output$full_graph_plot <- renderPlot({
-    ggplot(data = subset(data, !is.na(fiscal_year | amount))) +
-      geom_bar(mapping=aes(x = fiscal_year,
-                           y = amount),
-               stat = "identity") +
+    
+  acc_year = aggregate(amount~account, data, sum)
+  acc_year = acc_year[order(-acc_year$amount),]
+  top_acc = acc_year[1:5, 1]
+  
+  data %>%
+    filter(account %in% top_acc) %>%
+    ggplot()+
+    geom_bar(aes(x = fiscal_year, y = amount, fill = account), stat = "identity") +
       labs(x = "Año Fiscal",
            y = "Cantidad Total Anual",
-           title = "Gasto Anual Total",
-           subtitle = "IEPR & ICP") +
-      theme_minimal()
+           title = "Gasto Anual Total de Agencias Participantes",
+           fill = "Tipo de Cuenta") +
+      theme_minimal() +
+      scale_fill_brewer(palette = "Purples")
+    
   })
   
-  ##################### TOP TAB ###########################
   
-  #### Top Agency ####
+ ################### Agency TAB ######################### 
   
   # Top Agency Spending InfoBox
   
@@ -72,7 +91,7 @@ server <- function(input, output, session) {
     top_ag <- as.character(agency_data$department[1])
     amnt_ag <- round(sum(agency_data$amount[agency_data$department == top_ag], na.rm = TRUE),3)
     
-    valueBox(paste0("$", amnt_ag, " Millones"), paste(top_ag, " ", input$year), icon = icon("dollar"))
+    valueBox(paste0("$", amnt_ag, " Millones"), paste(top_ag, " ", input$year), icon = icon("dollar"), color = "teal")
   })
   
   # Top Agency Spending Data Table
@@ -85,72 +104,12 @@ server <- function(input, output, session) {
     agency_data$amount = agency_data$amount/1e6
     agency_data <- dplyr::arrange(agency_data, desc(amount))
     
-    datatable(agency_data, colnames = c("Agencia", "Cantidad (Millones)"), 
+    datatable(agency_data, filter = "top", colnames = c("Agencia", "Cantidad (Millones)"), 
               options = list(order = list(2, 'desc')))
   })
   
-  #### Type of Spending ####
   
-  # Type of Spending InfoBox
-  
-  output$top_type <- renderValueBox({
-    account_data <- subset(data, fiscal_year == input$year, select = c("account","amount"))
-    
-    account_data <- aggregate(amount~account, account_data, sum)
-    account_data$amount <- account_data$amount/1e6
-    account_data <- dplyr::arrange(account_data, desc(amount))
-    
-    top_tp <- as.character(account_data$account[1])
-    amnt_tp <- round(sum(account_data$amount[account_data$account == top_tp], na.rm = TRUE),3)
-    
-    valueBox(paste0("$", amnt_tp, " Millones"), paste(top_tp, " ", input$year), icon = icon("dollar"))
-  })
-  
-  
-  # Type of Spending Data Table
-  output$account_table <- DT::renderDataTable({
-    account_data <- subset(data, fiscal_year == input$year, select = c("account","amount"))
-    
-    account_data <- aggregate(amount~account, account_data, sum)
-    account_data$amount <- account_data$amount/1e6
-    account_data <- dplyr::arrange(account_data, desc(amount))
-    
-    datatable(account_data, colnames = c("Tipo de Cuenta", "Cantidad (Millones)"), 
-              options = list(order = list(2, 'desc')))
-  })
-  
-  #### Person ####
-  
-  # Person InfoBox
-  
-  output$top_person <- renderValueBox({
-    person_data <- subset(data, fiscal_year == input$year, select = c("name", "amount"))
-    
-    person_data <- aggregate(amount~name, person_data, sum)
-    person_data$amount <- person_data$amount/1e6
-    person_data <- dplyr::arrange(person_data, desc(amount))
-    
-    top_pers <- as.character(person_data$name[1])
-    amnt_pers <- round(sum(person_data$amount[person_data$name == top_pers], na.rm = TRUE), 3)
-    
-    valueBox(paste0("$", amnt_pers, " Millones"), paste(top_pers, " ", input$year), icon = icon("dollar"))
-  })
-  
-  # Person Data Table
-  output$person_table <- DT::renderDataTable({
-    person_data <- subset(data, fiscal_year == input$year, select = c("name", "amount"))
-    
-    person_data <- aggregate(amount~name, person_data, sum)
-    person_data$amount <- person_data$amount/1e6
-    person_data <- dplyr::arrange(person_data, desc(amount))
-    
-    datatable(person_data, colnames = c("Nombre", "Cantidad (Millones)"), 
-              options = list(order = list(2, 'desc')))
-  })
-  
-  ################ Viz Tab ##########################
-  
-  # Agency per Year
+   # Agency per Year
   
   
   output$agency_year_plot <- renderPlotly({
@@ -161,7 +120,7 @@ server <- function(input, output, session) {
       geom_line(mapping = aes(x = fiscal_year, y = amount, colour = department)) +
       labs(x = "Año Fiscal",
            y = "Cantidad en Millones de $",
-           title = "Gasto Agencial Anual", 
+           title = "Gasto Anual por Agencia", 
            colour = "Agencia")
     ggplotly(agency_yearly)
   })
@@ -177,7 +136,7 @@ server <- function(input, output, session) {
     geom_line(mapping = aes(x = month_amount$dates, y = amount, colour = department)) +
     labs(x = "Mes del Año Fiscal", 
          y = "Cantidad en Millones de $",
-         title = "Gasto Agencial Mensual",
+         title = "Gasto Mensual por Agencia",
          colour = "Agencia")
   
   output$agency_month_plot <- renderPlotly({
@@ -207,7 +166,7 @@ server <- function(input, output, session) {
       axis.ticks = element_blank()) + 
     labs(x = paste0("Trimestre del Año Fiscal (", min(data$fiscal_year), " - ", max(data$fiscal_year), ")"), 
          y = "Cantidad en Millones de $",
-         title = "Gasto Agencial por Trimestre",
+         title = "Gasto Trimestral por Agencia",
          colour = "Agencia")
   
   output$agency_qtr_plot <- renderPlotly({
@@ -227,11 +186,41 @@ server <- function(input, output, session) {
       axis.ticks = element_blank()) + 
     labs(x = "Agencia",
          y = "Cantidad en Millones de $",
-         title = "Gasto Agencial Total",
+         title = "Gasto Total por Agencia",
          fill = "Agencia")
   
   output$agency_agency_plot <- renderPlotly({
     ggplotly(agency_agency)
+  })
+  
+  ################### Account TAB ######################### 
+  
+  # Type of Spending InfoBox
+  
+  output$top_type <- renderValueBox({
+    account_data <- subset(data, fiscal_year == input$year, select = c("account","amount"))
+    
+    account_data <- aggregate(amount~account, account_data, sum)
+    account_data$amount <- account_data$amount/1e6
+    account_data <- dplyr::arrange(account_data, desc(amount))
+    
+    top_tp <- as.character(account_data$account[1])
+    amnt_tp <- round(sum(account_data$amount[account_data$account == top_tp], na.rm = TRUE),3)
+    
+    valueBox(paste0("$", amnt_tp, " Millones"), paste(top_tp, " ", input$year), icon = icon("dollar"), color = "teal")
+  })
+  
+  
+  # Type of Spending Data Table
+  output$account_table <- DT::renderDataTable({
+    account_data <- subset(data, fiscal_year == input$year, select = c("account","amount"))
+    
+    account_data <- aggregate(amount~account, account_data, sum)
+    account_data$amount <- account_data$amount/1e6
+    account_data <- dplyr::arrange(account_data, desc(amount))
+    
+    datatable(account_data, filter = "top", colnames = c("Tipo de Cuenta", "Cantidad (Millones)"), 
+              options = list(order = list(2, 'desc')))
   })
   
   # Account Year
@@ -258,7 +247,7 @@ server <- function(input, output, session) {
     geom_line(mapping = aes(x = fiscal_year, y = amount, colour = account)) +
     labs(x = "Año Fiscal",
          y = "Cantidad en Millones de $",
-         title = "Gasto por Tipo de Cuenta Anual", 
+         title = "Gasto Anual por Tipo de Cuenta", 
          colour = "Tipo de Cuenta")
   
   output$account_year_plot <- renderPlotly({
@@ -288,7 +277,7 @@ server <- function(input, output, session) {
     geom_line(mapping = aes(x = dates, y = amount, colour = account)) +
     labs(x = "Mes del Año Fiscal", 
          y = "Cantidad en Millones de $",
-         title = "Gasto por Tipo de Cuenta Mensual",
+         title = "Gasto Mensual por Tipo de Cuenta",
          colour = "Tipo de Cuenta")
   
   output$account_month_plot <- renderPlotly({
@@ -316,7 +305,7 @@ server <- function(input, output, session) {
     geom_line(mapping = aes(x = qtr, y = amount, colour = account, group = 1)) +
     labs(x = paste0("Trimestre del Año Fiscal (", min(data$fiscal_year), " - ", max(data$fiscal_year), ")"), 
          y = "Cantidad en Millones de $",
-         title = "Gasto por Tipo de Cuenta por Trimestre",
+         title = "Gasto Trimestral por Tipo de Cuenta",
          colour = "Tipo de Cuenta") + 
     theme(
       axis.text.x = element_blank(),
@@ -334,7 +323,7 @@ server <- function(input, output, session) {
     geom_bar(mapping = aes(x = account, y = amount, fill = account), stat = "identity") + 
     labs(x = "Tipo de Cuenta",
          y = "Cantidad en Millones de $",
-         title = "Gasto por Tipo de Cuenta Total",
+         title = "Gasto Total por Tipo de Cuenta",
          fill = "Tipo de Cuenta") +
     theme(
       axis.text.x = element_blank(),
@@ -343,6 +332,36 @@ server <- function(input, output, session) {
   output$account_account_plot <- renderPlotly({
     
     ggplotly(acc_acc_plot)
+  })
+  
+  ################### Person TAB ######################### 
+  
+  
+  # Person InfoBox
+  
+  output$top_person <- renderValueBox({
+    person_data <- subset(data, fiscal_year == input$year, select = c("name", "amount"))
+    
+    person_data <- aggregate(amount~name, person_data, sum)
+    person_data$amount <- person_data$amount/1e6
+    person_data <- dplyr::arrange(person_data, desc(amount))
+    
+    top_pers <- as.character(person_data$name[1])
+    amnt_pers <- round(sum(person_data$amount[person_data$name == top_pers], na.rm = TRUE), 3)
+    
+    valueBox(paste0("$", amnt_pers, " Millones"), paste(top_pers, " ", input$year), icon = icon("dollar"), color = "teal")
+  })
+  
+  # Person Data Table
+  output$person_table <- DT::renderDataTable({
+    person_data <- subset(data, fiscal_year == input$year, select = c("name", "amount"))
+    
+    person_data <- aggregate(amount~name, person_data, sum)
+    person_data$amount <- person_data$amount/1e6
+    person_data <- dplyr::arrange(person_data, desc(amount))
+    
+    datatable(person_data, filter = 'top', colnames = c("Nombre", "Cantidad (Millones)"), 
+              options = list(order = list(2, 'desc')))
   })
   
   # Person Anual
@@ -369,7 +388,7 @@ server <- function(input, output, session) {
     geom_line(mapping = aes(x = fiscal_year, y = amount, colour = name)) +
     labs(x = "Año Fiscal",
          y = "Cantidad en Millones de $",
-         title = "Gasto por Persona Anual", 
+         title = "Gasto Anual por Persona", 
          colour = "Persona")
   
   output$person_year_plot <- renderPlotly({
@@ -400,7 +419,7 @@ server <- function(input, output, session) {
     geom_line(mapping = aes(x = dates, y = amount, colour = name)) +
     labs(x = "Mes del Año Fiscal", 
          y = "Cantidad en Millones de $",
-         title = "Gasto por Persona Mensual",
+         title = "Gasto Mensual por Persona",
          colour = "Persona")
   
   output$person_month_plot <- renderPlotly({
@@ -429,7 +448,7 @@ server <- function(input, output, session) {
     geom_line(mapping = aes(x = qtr, y = amount, colour = name, group = 1)) +
     labs(x = paste0("Trimestre del Año Fiscal (", min(data$fiscal_year), " - ", max(data$fiscal_year), ")"), 
          y = "Cantidad en Millones de $",
-         title = "Gasto por Persona por Trimestre",
+         title = "Gasto Trimestral por Persona",
          colour = "Persona") + 
     theme(
       axis.text.x = element_blank(),
@@ -447,7 +466,7 @@ server <- function(input, output, session) {
     geom_bar(mapping = aes(x = name, y = amount, fill = name), stat = "identity") + 
     labs(x = "Persona",
          y = "Cantidad en Millones de $",
-         title = "Gasto por Persona Total",
+         title = "Gasto Total por Persona",
          fill = "Persona") +
     theme(
       axis.text.x = element_blank(),
@@ -457,23 +476,4 @@ server <- function(input, output, session) {
     ggplotly(ppl_ppl_plt)
   })
   
-  # output$single_var_1 <- renderPlotly({
-  #   data$fiscal_year <- as.factor(data$fiscal_year)
-  #   data$fiscal_year_period <- as.factor(data$fiscal_year_period)
-  #   
-  #   if (input$x == 'account'){
-  #     data %>%
-  #       dplyr::group_by(account, department, fiscal_year) %>%
-  #       select(department, amount, account, fiscal_year) %>%
-  #       summarize(size = sum(amount))
-  # %>%
-  #       dplyr::select(account, size, amount, department, fiscal_year, fiscal_year_period, name) %>%
-  #       dplyr::arrange(desc(size)) %>%
-  #       top_n(10)
-  #     
-  #     p <- ggplot(data = data) + 
-  #       geom_bar(mapping = aes(x = account, y = size, fill = as.name(input$z)), stat = "identity")
-  #     ggplotly(p)
-  #   }
-  #})
 }

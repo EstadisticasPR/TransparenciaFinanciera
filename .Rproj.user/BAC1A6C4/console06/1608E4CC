@@ -61,4 +61,9 @@ Total 4 (delta 3), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/3)   [Kremote: Resolving deltas:  33% (1/3)   [Kremote: Resolving deltas:  66% (2/3)   [Kremote: Resolving deltas: 100% (3/3)   [Kremote: Resolving deltas: 100% (3/3), completed with 3 local objects.[K
 To https://github.com/ian-flores/TransparenciaFinanciera.git
    dc07ca1..ca55240  master -> master
-]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ 
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ [K]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ ls
+[0m[01;35mamount_fiscal.png[0m  server.R  transparencia.csv  Transparencia_Financiera_PR.Rproj  ui.R  [01;34mwww[0m
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git add [K[K[K[K[K[K[K[Krm amount_fiscal.png 
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ ls
+server.R  transparencia.csv  Transparencia_Financiera_PR.Rproj  ui.R  [0m[01;34mwww[0m
+]0;/home/administrator/TransparenciaFinanciera]0;administrator@Transparencia-Server: ~/TransparenciaFinanciera[01;32madministrator@Transparencia-Server[00m:[01;34m~/TransparenciaFinanciera[00m$ git add --all
