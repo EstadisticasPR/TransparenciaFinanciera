@@ -478,8 +478,9 @@ server <- function(input, output, session) {
   
   ###### Data Download Tab ########
   output$table_download <- renderDataTable({
-    datatable(data, filter = 'top', colnames = c("Tipo de Cuenta", "Cantidad (USD)", "Fecha", "Agencia", "Año Fiscal", "Mes", "Nombre"), 
-              options = list(order = list(3, 'desc')))
+    df = data.frame(data)
+    datatable(df, filter = 'top', colnames = c("Mes", "Tipo de Cuenta", "Nombre", "Año Fiscal", "Fecha", "Cantidad (USD)",  "Agencia"),
+              options = list(order = list(4, 'desc')))
   })
   
   output$dwn_bttn <- downloadHandler('transparencia_financiera.csv', content = function(file){

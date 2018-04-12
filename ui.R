@@ -7,7 +7,7 @@ library(DT)
 library(plotly)
 
 ## UI App Header
-header <- dashboardHeader(title = "Transparencia Financiera PR", titleWidth = "100%"
+header <- dashboardHeader(title = "Sistema de Transparencia Financiera de Puerto Rico", titleWidth = "100%"
                             # tags$a(href='https://estadisticas.pr',
                             #              tags$img(src='iepr_esp.png',
                             #                       height="100%",
