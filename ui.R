@@ -7,10 +7,12 @@ library(DT)
 library(plotly)
 
 ## UI App Header
-header <- dashboardHeader(title = tags$a(href='https://estadisticas.pr',
-                                         tags$img(src='iepr_esp.png', 
-                                                  height="100%",
-                                                  width="50%")))
+header <- dashboardHeader(title = "Transparencia Financiera PR", titleWidth = "100%"
+                            # tags$a(href='https://estadisticas.pr',
+                            #              tags$img(src='iepr_esp.png',
+                            #                       height="100%",
+                            #                       width="50%"))
+                          )
 
 ## UI App Sidebar
 sidebar <- dashboardSidebar(
@@ -20,12 +22,22 @@ sidebar <- dashboardSidebar(
     menuItem("Cuentas", tabName = "cuentas", icon = icon("dollar")),
     menuItem("Personas", tabName = "personas", icon = icon("users")),
     menuItem("Explorador de Datos", tabName = "explorer", icon = icon("signal")),
+    menuItem("Descarga de Datos", tabName = "downloader", icon = icon("download")),
     uiOutput("year_slider")
   )
 )
 
+
+
 ## Spanish Description about the project
-spanish_about_short = "El Instituto de Estadísticas de Puerto Rico es 
+
+spanish_about_short = "Transparencia Financiera es parte de nuestro compromiso con mejorar la 
+transparencia del Gobierno de Puerto Rico. Al momento, provee información detallada de las 
+transacciones del Instituto de Cultura Puertorriqueña y del Instituto de Estadísticas de Puerto 
+Rico en distintos años. Esto con la intención de servir de ejemplo y motivar a todas las 
+entidades públicas a hacer lo propio."
+
+spanish_about_long = "El Instituto de Estadísticas de Puerto Rico es 
 una entidad gubernamental autónoma creada mediante la Ley Núm. 209-2003 
 para coordinar el servicio de producción de estadísticas del Gobierno 
 del Estado Libre Asociado de Puerto Rico y asegurar que los sistemas de 
@@ -53,7 +65,13 @@ Instituto de Cultura Puertorriqueña: desde año fiscal 2014-15
 Instituto de Estadísticas de Puerto Rico: desde año fiscal 2007-08"
 
 ## English Description about the proyect
-english_about_short = "The Puerto Rico Institute of Statistics (PRIS) is an 
+english_about_short = "This site is part of our commitment to improve the transparency of the 
+Government of Puerto Rico. Currently, it provides detailed information on the transactions of 
+the Institute of Puerto Rican Culture and of the Puerto Rico Institute of Statistics in different 
+years. It is our intention to serve as an example and to motivate all public entities of the 
+Government of Puerto Rico to do the same."
+
+english_about_long = "The Puerto Rico Institute of Statistics (PRIS) is an 
 autonomous public entity created by Puerto Rico Act No. 209-2003, as amended, 
 with the mission of coordinating the statistical production of the Government
 of Puerto Rico and to ensure that the data collection systems produce 
@@ -85,6 +103,17 @@ body <- dashboardBody(
     ## Home UI Content
     tabItem(tabName = "home", 
             h2("Transparencia Financiera"),
+            
+            # ## Short Descriptions
+            # fluidRow(
+            #   column(3),
+            #   column(6, 
+            #          h4(spanish_about_short),
+            #          p(),
+            #          p(),
+            #          h4(english_about_short)),
+            #   column(3)
+            # ),
             
             ## Progress Bar
             fluidRow(
@@ -126,11 +155,11 @@ body <- dashboardBody(
               column(1),
               column(4, 
                      h3("Sobre El Proyecto"),
-                     p(spanish_about_short)),
+                     p(spanish_about_long)),
               column(2),
               column(4,
                      h3("About The Project"),
-                     p(english_about_short)),
+                     p(english_about_long)),
               column(1)
             )
     ),
@@ -203,43 +232,13 @@ body <- dashboardBody(
             )
     ),
     tabItem(tabName = "explorer",
-            h3("Data Explorer"),
-            fluidRow(
-              column(4, selectInput("x", "Eje de X", 
-                                    c("Tipo de Cuenta" = "account",
-                                      "Cantidad" = "amount",
-                                      "Agencia" = "department",
-                                      "Año Fiscal" = "fiscal_year",
-                                      "Periodo del A~o Fiscal" = "fiscal_year_period",
-                                      "Nombre" = "name"), selected = "account")
-                     ),
-              column(4, selectInput("y", "Eje de Y", 
-                                    c("Tipo de Cuenta" = "account",
-                                      "Cantidad" = "amount",
-                                      "Agencia" = "department",
-                                      "Año Fiscal" = "fiscal_year",
-                                      "Periodo del Año Fiscal" = "fiscal_year_period",
-                                      "Nombre" = "name"), selected = "amount")
-                     ),
-              column(4, selectInput("z", "Eje de Z",
-                                    c("Tipo de Cuenta" = "account",
-                                      "Cantidad" = "amount",
-                                      "Agencia" = "department",
-                                      "Año Fiscal" = "fiscal_year",
-                                      "Periodo del Año Fiscal" = "fiscal_year_period",
-                                      "Nombre" = "name"), selected = "fiscal_year")
-                     )
-            ),
-            fluidRow(
-              column(1),
-              column(4, plotlyOutput("single_var_1")),
-              column(2),
-              column(4, plotlyOutput("single_var_2")),
-              column(1)
-            ),
+            h3("Data Explorer")),
+    tabItem(tabName = "downloader", 
+            h3("Downloader"),
+            p(class = 'text-center', downloadButton('dwn_bttn', "Descargar Datos Seleccionados")),
             fluidRow(
               column(2),
-              column(8, plotlyOutput("double_var_12")),
+              column(8, DT::dataTableOutput("table_download")),
               column(2)
             ))
   )
