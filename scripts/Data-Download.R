@@ -13,4 +13,4 @@ df['_id'] <- NULL
 colnames(df) <- c("fiscal_year_period", "account", "name", "fiscal_year", "date", "amount",  "department")
 
 # Save file, without the row indexes
-write.csv(df, "data/transparencia.csv", row.names = FALSE)
+write.csv(df, "../data/transparencia.csv", row.names = FALSE)

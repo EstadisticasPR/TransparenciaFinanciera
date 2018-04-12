@@ -15,7 +15,7 @@ server <- function(input, output, session) {
              "Transparencia Financiera es parte de nuestro compromiso con mejorar la transparencia del Gobierno de Puerto Rico. Al momento, provee información detallada de las transacciones del Instituto de Cultura Puertorriqueña y del Instituto de Estadísticas de Puerto Rico en distintos años. Esto con la intención de servir de ejemplo y motivar a todas las entidades públicas a hacer lo propio.",
              type = "info", confirmButtonText = "Excelente!", closeOnClickOutside = TRUE, confirmButtonCol = "#9BC337")
 
-  data <- read.csv("transparencia.csv", na.strings = c("", "NA"))
+  data <- read.csv("data/transparencia.csv", na.strings = c("", "NA"))
   data$date <- as.Date.character(data$date)
   
   ### Sidebar ####
