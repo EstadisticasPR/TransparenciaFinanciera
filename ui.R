@@ -116,11 +116,11 @@ body <- dashboardBody(
             # ),
             
             ## Progress Bar
-            fluidRow(
-              column(4),
-              column(4, valueBoxOutput('progress_bar', width = NULL)),
-              column(4)
-            ),
+            # fluidRow(
+            #   column(4),
+            #   column(4, valueBoxOutput('progress_bar', width = NULL)),
+            #   column(4)
+            # ),
             
             ## Summaries
             fluidRow(

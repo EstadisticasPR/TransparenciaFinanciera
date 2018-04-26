@@ -7,10 +7,11 @@ library(shinydashboard)
 library(tidyverse)
 library(DT)
 library(plotly)
-
+install.packages(c("shiny", "shinyjs", "shinyalert", "shinydashboard", "tidyverse", "DT", "plotly"))
 
 server <- function(input, output, session) {
   
+  # Displays modal to display hello message
   shinyalert("Transparencia Financiera",
              "Transparencia Financiera es parte de nuestro compromiso con mejorar la transparencia del Gobierno de Puerto Rico. Al momento, provee información detallada de las transacciones del Instituto de Cultura Puertorriqueña y del Instituto de Estadísticas de Puerto Rico en distintos años. Esto con la intención de servir de ejemplo y motivar a todas las entidades públicas a hacer lo propio.",
              type = "info", confirmButtonText = "Excelente!", closeOnClickOutside = TRUE, confirmButtonCol = "#9BC337")
@@ -20,23 +21,27 @@ server <- function(input, output, session) {
   
   ### Sidebar ####
   
+  # Slider to choose year
   output$year_slider <- renderUI({
     sliderInput("year", "Año (Year)", min = min(data$fiscal_year), max = max(data$fiscal_year), value = max(data$fiscal_year), sep = "", step = 1)
   })
   
   ######################## HOME TAB ##################################
   
-  ## Progress Bar
-  output$progress_bar <- renderValueBox({
-    pctg = length(unique(data$department[data$fiscal_year == input$year], na.rm = TRUE))
-    valueBox(paste0(round(pctg/131, 3), " % ", "(",(pctg), ") "), 
-             paste0("Porcentaje de Participación Agencial para el ", input$year), 
-             icon = icon("university"), 
-             color = "teal")
-  })
+  # 
+  # ## Progress Bar
+  # # ValueBox to show percentage of agencies participating in the system
+  #   output$progress_bar <- renderValueBox({
+  #   pctg = length(unique(data$department[data$fiscal_year == input$year], na.rm = TRUE))
+  #   valueBox(paste0(round(pctg/131, 3), " % ", "(",(pctg), ") "), 
+  #            paste0("Porcentaje de Participación Agencial para el ", input$year), 
+  #            icon = icon("university"), 
+  #            color = "teal")
+  # })
   
   ## InfoBox total gasto anual
 
+  # InfoBox to visualize the amount spent per year
   output$total_spending <- renderInfoBox({
     total_spent = sum(data$amount[data$fiscal_year == input$year], na.rm = TRUE)
     s_total_spent = paste0("$", round(total_spent/1e6, 3), " Millones")
@@ -46,6 +51,7 @@ server <- function(input, output, session) {
   
   ##InfoBox total de transacciones
   
+  # InfoBox to visualize number of transactions per year
   output$num_transactions <- renderInfoBox({
     trans_num = length(data$amount[data$fiscal_year == input$year])
     trans_num = paste0(trans_num, " Transacciones")
@@ -54,8 +60,11 @@ server <- function(input, output, session) {
   })
   
   ## Full Graph Comparison
+  
+  # Displays hidden graph when button pressed
   observeEvent(input$full_graph_bttn, {toggle("full_graph_plot")})
   
+  # GGPLOT to visualize the amount spent per fiscal year
   output$full_graph_plot <- renderPlot({
     
   acc_year = aggregate(amount~account, data, sum)
@@ -72,7 +81,6 @@ server <- function(input, output, session) {
            fill = "Tipo de Cuenta") +
       theme_minimal() +
       scale_fill_brewer(palette = "Purples")
-    
   })
   
   
