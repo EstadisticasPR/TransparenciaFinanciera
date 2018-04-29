@@ -5,21 +5,24 @@ library(shinydashboard)
 library(tidyverse)
 library(DT)
 library(plotly)
+library(dashboardthemes)
+
 
 ## UI App Header
-header <- dashboardHeader(title = "Sistema de Transparencia Financiera de Puerto Rico", titleWidth = "100%"
-                            # tags$a(href='https://estadisticas.pr',
-                            #              tags$img(src='iepr_esp.png',
-                            #                       height="100%",
-                            #                       width="50%"))
+header <- dashboardHeader(title = 
+                            #"Sistema de Transparencia Financiera de Puerto Rico", titleWidth = "100%"
+                             tags$div(tags$a(href='https://estadisticas.pr',
+                                          tags$img(src = 'iepr_esp.png',
+                                                   height = "3%",
+                                                   width = "5%", style = "float: left; display: block; vertical-align: middle;")), tags$h2('Sistema de Transparencia Financiera de Puerto Rico')), titleWidth = "100%"
                           )
 
 ## UI App Sidebar
 sidebar <- dashboardSidebar(
   sidebarMenu(
     menuItem("Página Principal", tabName = "home", icon = icon("home")),
-    menuItem("Agencias", tabName = "agencias", icon = icon("university")), 
-    menuItem("Cuentas", tabName = "cuentas", icon = icon("dollar")),
+    #menuItem("Agencias", tabName = "agencias", icon = icon("university")), 
+    menuItem("Tipo de Gastos", tabName = "cuentas", icon = icon("dollar")),
     menuItem("Personas", tabName = "personas", icon = icon("users")),
     menuItem("Explorador de Datos", tabName = "explorer", icon = icon("signal")),
     menuItem("Descarga de Datos", tabName = "downloader", icon = icon("download")),
@@ -97,6 +100,9 @@ Puerto Rico Institute of Statistics from FY 2007-08 onward."
 
 ## UI App Body
 body <- dashboardBody(
+  shinyDashboardThemes(
+    theme = "grey_light"
+  ),
   useShinyalert(),
   useShinyjs(),
   tabItems(
@@ -123,71 +129,74 @@ body <- dashboardBody(
             # ),
             
             ## Summaries
-            fluidRow(
-              column(1),
-              infoBoxOutput("total_spending"),
-              column(2),
-              infoBoxOutput("num_transactions")
-            ),
+            # fluidRow(
+            #   column(1),
+            #   infoBoxOutput("total_spending"),
+            #   column(2),
+            #   infoBoxOutput("num_transactions")
+            # ),
             
             # Full Comparison Graph
-            fluidRow(
-              column(1),
-              column(1,
-                     actionButton("full_graph_bttn",
-                                  "Mostrar más años"))
-            ),
-            
-            fluidRow(
-              p(),
-              column(2),
-              column(8,
-                     hidden(
-                       plotOutput('full_graph_plot')
-                     )
-              ),
-              p()
-            ),
+            # fluidRow(
+            #   column(1),
+            #   column(1,
+            #          actionButton("full_graph_bttn",
+            #                       "Mostrar más años"))
+            # ),
+            # 
+            # fluidRow(
+            #   p(),
+            #   column(2),
+            #   column(8,
+            #          hidden(
+            #            plotOutput('full_graph_plot')
+            #          )
+            #   ),
+            #   p()
+            # ),
 
             
             ## Text Descriptions
             fluidRow(
-              column(1),
-              column(4, 
-                     h3("Sobre El Proyecto"),
-                     p(spanish_about_long)),
-              column(2),
-              column(4,
-                     h3("About The Project"),
-                     p(english_about_long)),
-              column(1)
-            )
-    ),
-    tabItem(tabName = "agencias",
-            h2("Datos por Agencia"),
-            fluidRow(
-              column(4),
-              column(4, valueBoxOutput("top_agency", width = NULL)),
-              column(4)
-            ),
-            fluidRow(
               column(2),
               tabBox(
                 tabPanel("Gasto Anual por Agencia", plotlyOutput("agency_year_plot")),
-                tabPanel("Gasto Mensual por Agencia", plotlyOutput("agency_month_plot")),
                 tabPanel("Gasto Trimestral por Agencia", plotlyOutput("agency_qtr_plot")),
-                tabPanel("Gasto Total por Agencia", plotlyOutput("agency_agency_plot")),
+                tabPanel("Gasto Mensual por Agencia", plotlyOutput("agency_month_plot")),
+                #tabPanel("Gasto Total por Agencia", plotlyOutput("agency_agency_plot")),
                 width = 8),
               column(2)
-            ),
+            ), 
+            fluidRow(
+              column(1),
+              column(4, 
+                     h3("Sobre El Proyecto"),
+                     p(spanish_about_short)),
+              column(2),
+              column(4,
+                     h3("About The Project"),
+                     p(english_about_short)),
+              column(1)
+            ),  
+            h3("Agencias Participantes"),
             fluidRow(
               column(2),
               column(8,  DT::dataTableOutput("agency_table")),
               column(2)
             )
     ),
+    # tabItem(tabName = "agencias",
+    #         h2("Datos por Agencia"),
+    #         fluidRow(
+    #           column(4),
+    #           column(4, valueBoxOutput("top_agency", width = NULL)),
+    #           column(4)
+    #         )#,
+    #         
+    #         
+    # ),
     tabItem(tabName = "cuentas", 
-            h3("Datos por tipo de Cuenta"),
+            h3("Datos por tipo de Gasto"),
             fluidRow(
               column(4),
               column(4, valueBoxOutput("top_type", width = NULL)),
@@ -196,10 +205,10 @@ body <- dashboardBody(
             fluidRow(
               column(2),
               tabBox(
-                tabPanel("Gasto Anual por Tipo de Cuenta", plotlyOutput("account_year_plot")),
-                tabPanel("Gasto Mensual por Tipo de Cuenta", plotlyOutput("account_month_plot")),
-                tabPanel("Gasto Trimestral por Tipo de Cuenta", plotlyOutput("account_qtr_plot")),
-                tabPanel("Gasto Total por Tipo de Cuenta", plotlyOutput("account_account_plot")),
+                tabPanel("Gasto Anual por Tipo de Gasto", plotlyOutput("account_year_plot")),
+                tabPanel("Gasto Trimestral por Tipo de Gasto", plotlyOutput("account_qtr_plot")),
+                tabPanel("Gasto Mensual por Tipo de Gasto", plotlyOutput("account_month_plot")),
+                #tabPanel("Gasto Total por Tipo de Cuenta", plotlyOutput("account_account_plot")),
                 width = 8),
               column(2)
             ),
@@ -220,9 +229,9 @@ body <- dashboardBody(
               column(2),
               tabBox(
                 tabPanel("Gasto Anual por Persona", plotlyOutput("person_year_plot")),
-                tabPanel("Gasto Mensual por Persona", plotlyOutput("person_month_plot")),
                 tabPanel("Gasto Trimestral por Persona", plotlyOutput("person_qtr_plot")),
-                tabPanel("Gasto Total por Persona", plotlyOutput("person_person_type")),
+                tabPanel("Gasto Mensual por Persona", plotlyOutput("person_month_plot")),
+                #tabPanel("Gasto Total por Persona", plotlyOutput("person_person_type")),
                 width = 8),
               column(2)
             ),
@@ -237,11 +246,11 @@ body <- dashboardBody(
             h3("Downloader"),
             p(class = 'text-center', downloadButton('dwn_bttn', "Descargar Datos Seleccionados")),
             fluidRow(
-              column(2),
-              column(8, DT::dataTableOutput("table_download")),
-              column(2)
+              column(1),
+              column(10, DT::dataTableOutput("table_download")),
+              column(1)
             ))
   )
 )
 
-ui <- dashboardPage(skin="purple", header, sidebar, body)
+ui <- dashboardPage(header, sidebar, body)
