@@ -18,10 +18,28 @@ install.packages(c("shiny", "shinyjs", "shinyalert", "shinydashboard", "tidyvers
 
 ### Execute the App
 
+to execute the app locally you just have to clone the git repository and open the server.R file or the ui.R file in RStdio and execute. 
 
 ### Built With
+
+R, R Studio and the following packages: 
+
+* shiny: 1.0.5
+* shinyjs: 1.0
+* shinyalert: 1.0
+* shinydashborad: 0.7.0
+* tidyverse: 1.2.1
+* DT: 0.4
+* plotly: 4.7.1
+
 ### Contributing
+
+You can contribute by writing a pull request or contacting webmaster@estadisticas.pr
+
 ### Authors
+
+This shinydashboard was written by Ian Flores Siaca (https://github.com/ian-flores). 
+
 ### License
 
 ## Spanish
@@ -41,6 +59,8 @@ install.packages(c("shiny", "shinyjs", "shinyalert", "shinydashboard", "tidyvers
 ```
 
 ### Ejecutar la aplicacion 
+
+Para ejecutar la aplicacion en un ambiente local 
 ### Herramientas de Desarrollo
 ### Para Contribuir
 ### Autores
