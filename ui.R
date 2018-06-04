@@ -14,12 +14,15 @@ years. It is our intention to serve as an example and to motivate all public ent
 Government of Puerto Rico to do the same."
 
 library(shiny)
-library(shinycustomloader)
+library(tidyverse)
+library(DT)
+library(plotly)
+library(data.table)
+library(rbokeh)
+library(lubridate)
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage("Sistema de Transparencia Financiera de Puerto Rico",
-             withLoader(plotOutput("distPlot"), type="html", loader="loader4"),
-             
              tabPanel("Pagina Principal", icon = icon("home"),
                       fluidPage(
                         titlePanel("Transparencia Financiera"),
@@ -79,7 +82,7 @@ shinyUI(
                       h3("Datos por Persona"), 
                       fluidRow(
                         column(4),
-                        column(4, valueBoxOutput("top_person", width = NULL)),
+                        column(4),
                         column(4)
                       ),
                       fluidRow(

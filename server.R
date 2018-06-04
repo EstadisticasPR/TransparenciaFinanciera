@@ -6,10 +6,11 @@ library(DT)
 library(plotly)
 library(data.table)
 library(rbokeh)
+library(lubridate)
 
 shinyserver <- function(input, output, session) {
   
-  data <- fread('../data/transparencia.csv', na.strings = c('', 'NA'))
+  data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
 
   #### Home Tab ####
   
