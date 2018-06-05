@@ -1,5 +1,5 @@
 
-## Libraries ####
+#### ---- Libraries ---- ####
 library(shiny)
 library(tidyverse)
 library(DT)
@@ -12,9 +12,7 @@ shinyserver <- function(input, output, session) {
   
   data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
 
-  #### Home Tab ####
-  
-  # Agency Spending Data Table
+#### ---- HOME TAB DATA TABLE --- ####
   
   output$agency_table <- DT::renderDataTable({
     agency_data <- data %>%
@@ -294,4 +292,83 @@ shinyserver <- function(input, output, session) {
     write.csv(df, file)
   })
   
+  x <- reactive({
+    switch(input$indvar,
+                "Mes" = 'fiscal_year_period', 
+                "A~o" = 'fiscal_year',
+                "Tipo de Gasto" = "account", 
+                "Persona" = "name", 
+                "Agencia" = "department")
+  })
+  
+  z <- reactive({
+    switch(input$depvar, 
+              "Tipo de Gasto" = "account", 
+              "Persona" = "name", 
+              "Agencia" = "department")
+  })
+  
+  output$data_explorer_plot <- renderRbokeh({
+    
+    if (x() == "fiscal_year_period"){
+      third_axis = as.name(z())
+      
+      plot_data = data %>%
+        filter(name %in% c(name_year$name)) %>%
+        group_by_('fiscal_year_period', z(), 'fiscal_year') %>%
+        summarize(amount = sum(amount/1e6)) %>%
+        mutate(dates = ymd(paste0(fiscal_year, '/', fiscal_year_period, '/1'))) %>%
+        arrange(dates)
+      
+      figure(legend_location = 'top_left', width = 3300, height = 1100, h_symmetry = T) %>%
+        ly_lines(dates, 
+                 amount, 
+                 plot_data, 
+                 group = z(),
+                 color = z()) %>%
+        ly_points(dates,
+                  amount,
+                  plot_data,
+                  group = z(),
+                  color = z(), 
+                  hover = c(dates, z(), amount))
+      
+    } else if (x() == "fiscal_year"){
+      third_axis = as.name(z())
+      
+      plot_data = data %>%
+        filter(name %in% c(name_year$name)) %>%
+        group_by_(z(), 'fiscal_year') %>%
+        summarize(amount = sum(amount/1e6))
+      
+      figure(legend_location = 'top_left', width = 3300, height = 1100, h_symmetry = T) %>%
+        ly_lines(fiscal_year, 
+                 amount, 
+                 plot_data, 
+                 group = z(),
+                 color = z()) %>%
+        ly_points(fiscal_year,
+                  amount,
+                  plot_data,
+                  group = z(),
+                  color = z(),
+                  hover = c(fiscal_year, z(), amount))
+    } else if (x() == "account" || x() == "name" || x() == "department"){
+      third_axis = as.name(z())
+      
+      plot_data = data %>%
+        filter(name %in% c(name_year$name)) %>%
+        group_by_(z(), x()) %>%
+        summarize(amount = sum(amount/1e6))
+      
+      figure(legend_location = 'top_left', width = 3300, height = 1100, h_symmetry = T) %>%
+        ly_bar(x(), 
+               amount, 
+               plot_data, 
+               hover = T, 
+               color = z(), 
+               position = "dodge")
+    }
+    
+  })
 }

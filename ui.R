@@ -20,6 +20,7 @@ library(plotly)
 library(data.table)
 library(rbokeh)
 library(lubridate)
+
 # Define UI for application that draws a histogram
 shinyUI(
   navbarPage("Sistema de Transparencia Financiera de Puerto Rico",
@@ -105,14 +106,15 @@ shinyUI(
                           sidebarPanel(width = 2,
                                        helpText("Choose the variables"),
                                        selectInput("indvar", 
-                                                   label = "VARIABLE 1",
+                                                   label = "Variable de Interes 1",
                                                    choices = list("Mes", "A~o", "Tipo de Gasto", "Persona", "Agencia"),
                                                    selected = "A~o"),
                                        selectInput("depvar",
-                                                   label = "VARIABLE 2",
-                                                   choices = list("Ninguna", "Tipo de Gasto", "Persona", "Agencia"),
-                                                   selected = "Ninguna")),
-                          mainPanel(p("IAN"))
+                                                   label = "Variable de Interes 2",
+                                                   choices = list("Tipo de Gasto", "Persona", "Agencia"),
+                                                   selected = "Tipo de Gasto")),
+                          mainPanel(
+                            rbokehOutput("data_explorer_plot"))
                       ))),
              tabPanel("Descarga de Datos", icon = icon("download"), 
                       h3("Downloader"),
