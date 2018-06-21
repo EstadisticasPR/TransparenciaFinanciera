@@ -16,7 +16,6 @@ Government of Puerto Rico to do the same."
 library(shiny)
 library(tidyverse)
 library(DT)
-library(plotly)
 library(data.table)
 library(rbokeh)
 library(lubridate)
@@ -26,8 +25,8 @@ shinyUI(
   navbarPage("Sistema de Transparencia Financiera de Puerto Rico",
              tabPanel("Pagina Principal", icon = icon("home"),
                       fluidPage(
-                        titlePanel("Transparencia Financiera"),
                         fluidRow(
+                          h1(class="text-center", "Sistema de Transparencia Financiera de Puerto Rico"),
                             column(2),
                             column(8, 
                                    tabsetPanel(
@@ -41,15 +40,15 @@ shinyUI(
                         fluidRow(
                           column(1),
                           column(4,
-                                 h3("Sobre el Proyecto"),
-                                 p(spanish_about_short)),
+                                 h3(class="text-center", "Sobre el Proyecto"),
+                                 p(class="text-justify", spanish_about_short)),
                           column(2),
                           column(4, 
-                                 h3("About the Project"),
-                                 p(english_about_short)),
+                                 h3(class="text-center", "About the Project"),
+                                 p(class="text-justify", english_about_short)),
                           column(1)
                         ),
-                        h3("Agencias Participantes"),
+                        h3( class="text-center", "Agencias Participantes"),
                         fluidRow(
                           column(2),
                           column(8, DT::dataTableOutput("agency_table")),
@@ -58,7 +57,7 @@ shinyUI(
                       )
               ),
              tabPanel("Tipo de Gastos", icon = icon("dollar"),
-                      h3("Datos por tipo de gasto"),
+                      h3(class="text-center","Datos por Tipo de Gasto"),
                       fluidRow(
                         column(4),
                         column(4),
@@ -80,7 +79,7 @@ shinyUI(
                       )
                       ),
              tabPanel("Personas", icon = icon("users"), 
-                      h3("Datos por Persona"), 
+                      h3(class="text-center","Datos por Persona"), 
                       fluidRow(
                         column(4),
                         column(4),
@@ -127,7 +126,12 @@ shinyUI(
                         column(10, DT::dataTableOutput("table_download")),
                         column(1)
                       )),
+             # tags$script("var header = $('.navbar > .container');
+             #           header.append('<div style='float:right'>
+             #              <a href='https://twitter.com/'> 
+             #                  <button type='button' class='btn btn-tw'><i class='fa fa-twitter pr-1'></i></button></a>
+             #                  </div>');
+             #                  console.log(header)"),
              collapsible = T, fluid = T, inverse = T
-  
   )
 )
