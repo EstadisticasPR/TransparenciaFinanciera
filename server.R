@@ -6,6 +6,8 @@ library(plotly)
 library(data.table)
 library(rbokeh)
 library(lubridate)
+library(shinythemes)
+
 
 shinyserver <- function(input, output, session) {
   
@@ -18,12 +20,12 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
       select("department", "amount") %>%
       group_by(department) %>%
       summarize(amount = sum(amount/1e6, na.rm = T)) %>%
-      arrange(desc(amount))
+      arrange(desc(amount)) %>%
+      mutate(amount = paste(round(amount, 3), '$'))
     
     datatable(agency_data, filter = "top", colnames = c("Agencia", "Cantidad (Millones)"), 
               options = list(order = list(2, 'desc')))
   })
-  
   
   
 ####  HOME TAB PLOTS   ####
@@ -45,8 +47,9 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = department, 
                 color = department, 
                 hover = c(department, fiscal_year, amount)) %>%
-      x_axis(label = "A~o Fiscal") %>%
-      y_axis(label = "Millones de Dolares")
+      x_axis(label = "Año Fiscal") %>%
+      y_axis(label = "Millones de Dolares") %>%
+      theme_axis(which = c("x"), minor_tick_line_color = "white")
   })
   
   # Agency per Month
@@ -69,7 +72,7 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = department, 
                 color = department, 
                 hover = c(department, dates, amount)) %>%
-      x_axis(label = "A~o Fiscal") %>%
+      x_axis(label = "Año Fiscal") %>%
       y_axis(label = "Millones de Dolares")
   })
   
@@ -92,8 +95,9 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = department, 
                 color = department, 
                 hover = c(qtr, department, amount)) %>%
-      x_axis(label = paste0("Trimestre del A~o Fiscal (", min(data$fiscal_year), ' - ', max(data$fiscal_year), ')')) %>%
-      y_axis(label = "Millones de Dolares")
+      x_axis(label = paste0("Trimestre del Año Fiscal (", min(data$fiscal_year), ' - ', max(data$fiscal_year), ')')) %>%
+      y_axis(label = "Millones de Dolares") %>%
+      theme_axis(which = c("x"), major_label_text_color = "white", major_tick_line_color = "white")
   })
 
 
@@ -104,7 +108,8 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
       select("account", "amount") %>%
       group_by(account) %>%
       summarize(amount = sum(amount/1e6)) %>%
-      arrange(desc(amount))
+      arrange(desc(amount)) %>%
+      mutate(amount = paste(round(amount, 3), '$'))
     
     datatable(account_data, filter = "top", colnames = c("Tipo de Gasto", "Cantidad (Millones)"), 
               options = list(order = list(2, 'desc')))
@@ -137,8 +142,10 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = account, 
                 color = account, 
                 hover = c(account, fiscal_year, amount)) %>%
-      x_axis(label = "A~o Fiscal") %>%
-      y_axis(label = "Millones de Dolares")
+      x_axis(label = "Año Fiscal") %>%
+      y_axis(label = "Millones de Dolares") %>%
+    theme_axis(which = c("x"), minor_tick_line_color = "white")
+
   })
   
   # Account Month
@@ -163,7 +170,7 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = account, 
                 color = account, 
                 hover = c(account, dates, amount)) %>%
-      x_axis(label = "A~o Fiscal") %>%
+      x_axis(label = "Año Fiscal") %>%
       y_axis(label = "Millones de Dolares")
   })
   
@@ -187,8 +194,9 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = account,
                 color = account,
                 hover = c(qtr, account, amount)) %>%
-      x_axis(label = paste0("Trimestre del A~o Fiscal (", min(data$fiscal_year), ' - ', max(data$fiscal_year), ')')) %>%
-      y_axis(label = "Millones de Dolares")
+      x_axis(label = paste0("Trimestre del Año Fiscal (", min(data$fiscal_year), ' - ', max(data$fiscal_year), ')')) %>%
+      y_axis(label = "Millones de Dolares") %>%
+      theme_axis(which = c("x"), major_label_text_color = "white", major_tick_line_color = "white")
    })
   
   
@@ -199,7 +207,8 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
       select("name", "amount") %>%
       group_by(name) %>%
       summarize(amount = (sum(amount)/1e6)) %>%
-      arrange(desc(amount))
+      arrange(desc(amount)) %>%
+      mutate(amount = paste(round(amount, 3), '$'))
     
     datatable(person_data, filter = 'top', colnames = c("Nombre", "Cantidad (Millones)"), 
               options = list(order = list(2, 'desc')))
@@ -232,9 +241,10 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = name, 
                 color = name, 
                 hover = c(name, fiscal_year, amount)) %>%
-      x_axis(label = "A~o Fiscal") %>%
-      y_axis(label = "Millones de Dolares")
-  })
+      x_axis(label = "Año Fiscal") %>%
+      y_axis(label = "Millones de Dolares") %>%
+      theme_axis(which = c("x"), minor_tick_line_color = "white")
+    })
   
   # Person Month
   
@@ -258,7 +268,7 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = name, 
                 color = name, 
                 hover = c(name, dates, amount)) %>%
-      x_axis(label = "A~o Fiscal") %>%
+      x_axis(label = "Año Fiscal") %>%
       y_axis(label = "Millones de Dolares")
   })
   
@@ -282,8 +292,9 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
                 group = name,
                 color = name,
                 hover = c(qtr, name, amount)) %>%
-      x_axis(label = paste0("Trimestre del A~o Fiscal (", min(data$fiscal_year), ' - ', max(data$fiscal_year), ')')) %>%
-      y_axis(label = "Millones de Dolares")
+      x_axis(label = paste0("Trimestre del Año Fiscal (", min(data$fiscal_year), ' - ', max(data$fiscal_year), ')')) %>%
+      y_axis(label = "Millones de Dolares")  %>%
+      theme_axis(which = c("x"), major_label_text_color = "white", major_tick_line_color = "white")
   })
   
 
@@ -291,7 +302,7 @@ data <- fread('data/transparencia.csv', na.strings = c('', 'NA'))
 x <- reactive({
   switch(input$indvar,
          "Mes" = 'fiscal_year_period', 
-         "A~o" = 'fiscal_year',
+         "Año" = 'fiscal_year',
          "Tipo de Gasto" = "account", 
          "Persona" = "name", 
          "Agencia" = "department")
@@ -382,6 +393,7 @@ output$data_explorer_plot <- renderRbokeh({
     write.csv(df, file)
   })
   
+
 
 
 }

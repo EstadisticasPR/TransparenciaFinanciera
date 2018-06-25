@@ -14,16 +14,16 @@ years. It is our intention to serve as an example and to motivate all public ent
 Government of Puerto Rico to do the same."
 
 library(shiny)
-library(tidyverse)
 library(DT)
-library(data.table)
 library(rbokeh)
 library(lubridate)
+library(shinythemes)
 
 # Define UI for application that draws a histogram
 shinyUI(
-  navbarPage("Sistema de Transparencia Financiera de Puerto Rico",
-             tabPanel("Pagina Principal", icon = icon("home"),
+  navbarPage(theme = shinytheme("sandstone"), 
+             "Sistema de Transparencia Financiera de Puerto Rico",
+             tabPanel("Página Principal", icon = icon("home"),
                       fluidPage(
                         fluidRow(
                           h1(class="text-center", "Sistema de Transparencia Financiera de Puerto Rico"),
@@ -36,7 +36,7 @@ shinyUI(
                                  )
                                ),
                         column(2)
-                        ), 
+                        ),
                         fluidRow(
                           column(1),
                           column(4,
@@ -48,6 +48,7 @@ shinyUI(
                                  p(class="text-justify", english_about_short)),
                           column(1)
                         ),
+                        hr(),
                         h3( class="text-center", "Agencias Participantes"),
                         fluidRow(
                           column(2),
@@ -72,6 +73,7 @@ shinyUI(
                                  tabPanel("Gasto Mensual por Tipo de Gasto", rbokehOutput("account_month_plot")))),
                         column(2)
                         ),
+                      hr(),
                       fluidRow(
                         column(2),
                         column(8, DT::dataTableOutput("account_table")),
@@ -79,12 +81,7 @@ shinyUI(
                       )
                       ),
              tabPanel("Personas", icon = icon("users"), 
-                      h3(class="text-center","Datos por Persona"), 
-                      fluidRow(
-                        column(4),
-                        column(4),
-                        column(4)
-                      ),
+                      h3(class="text-center","Datos por Persona"),
                       fluidRow(
                         column(2),
                         column(8, tabsetPanel(
@@ -94,22 +91,23 @@ shinyUI(
                           )),
                         column(2)
                       ),
+                      hr(),
                       fluidRow(
                         column(2),
                         column(8, DT::dataTableOutput("person_table"))
                       )),
              tabPanel("Explorador de Datos", icon = icon("signal"),
                       fluidPage(
-                        titlePanel("Data Explorer"),
+                        titlePanel("Explorador de Datos"),
                         sidebarLayout(
                           sidebarPanel(width = 2,
-                                       helpText("Choose the variables"),
+                                       helpText("Seleccione las variables que interesa explorar:"),
                                        selectInput("indvar", 
-                                                   label = "Variable de Interes 1",
-                                                   choices = list("Mes", "A~o", "Tipo de Gasto", "Persona", "Agencia"),
-                                                   selected = "A~o"),
+                                                   label = "",
+                                                   choices = list("Mes", "Año", "Tipo de Gasto", "Persona", "Agencia"),
+                                                   selected = "Año"),
                                        selectInput("depvar",
-                                                   label = "Variable de Interes 2",
+                                                   label = "",
                                                    choices = list("Tipo de Gasto", "Persona", "Agencia"),
                                                    selected = "Tipo de Gasto")),
                           mainPanel(
@@ -117,8 +115,8 @@ shinyUI(
                       ))),
              tabPanel("Descarga de Datos", icon = icon("download"), 
                       h3("Downloader"),
-                      h5(class = 'text-left', 'En esta pagina puede seleccionar los datos que desea descargar 
-                        de el Sistema de Transparencia Financiera de Puerto Rico, luego presiona el boton de 
+                      h5(class = 'text-left', 'En esta página puede seleccionar los datos que desea descargar 
+                        de el Sistema de Transparencia Financiera de Puerto Rico, luego presiona el botón de 
                         descarga y descargara un archivo en formato CSV.'),
                       p(class = 'text-center', downloadButton('dwn_bttn', "Descargar Datos Seleccionados")),
                       fluidRow(
@@ -126,12 +124,6 @@ shinyUI(
                         column(10, DT::dataTableOutput("table_download")),
                         column(1)
                       )),
-             # tags$script("var header = $('.navbar > .container');
-             #           header.append('<div style='float:right'>
-             #              <a href='https://twitter.com/'> 
-             #                  <button type='button' class='btn btn-tw'><i class='fa fa-twitter pr-1'></i></button></a>
-             #                  </div>');
-             #                  console.log(header)"),
-             collapsible = T, fluid = T, inverse = T
+             collapsible = T, fluid = T
   )
 )
