@@ -11,4 +11,4 @@ def get_tf_data():
     data_response = requests.get(url)
     data_table_prem = pd.DataFrame.from_dict(data_response.json()['result']['records'])
     data_table_final = data_table_prem.drop(columns=['_id'])
-    data_table_final.to_csv("python-csv-dataset.csv", index=False)
+    data_table_final.to_csv("data/transparencia.csv", index=False)
