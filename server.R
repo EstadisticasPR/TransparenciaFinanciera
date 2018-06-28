@@ -2,7 +2,6 @@
 library(shiny)
 library(tidyverse)
 library(DT)
-library(plotly)
 library(data.table)
 library(rbokeh)
 library(lubridate)

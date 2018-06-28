@@ -1,5 +1,7 @@
 # Transparencia Financiera PR
 
+sudo docker build -t transparencia . && sudo docker run -d -p 80:80 transparencia
+
 ## English
 
 ### Getting Started
