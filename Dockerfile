@@ -1,15 +1,16 @@
-# Pull shiny-server image
-FROM rocker/shiny:latest
+RUN apt-get install r-base r-base-dev
+RUN apt update && apt install -y libxml2-dev libcurl4-openssl-dev libssl-dev
 
-# Install R Packages dependencies
-RUN apt update && apt install -y r-cran-curl \
-    r-cran-openssl r-cran-xml2
+RUN Rscript -e "install.packages(c('shiny'), repos = 'https://cran.rstudio.com/', depende$
+RUN Rscript -e "install.packages(c('tidyverse','DT','data.table','rbokeh','shinythemes'),$
 
-# Install R Packages
-RUN Rscript -e "install.packages(c('tidyverse','DT','plotly','data.table','rbokeh','lubridate','shinythemes'), repos='https://cran.rstudio.com/')"
+RUN wget https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-1.5.7.907-amd64.d$
+RUN dpkg -i shiny-server-1.5.7.907-amd64.deb
+RUN chmod 777 /srv/shiny-server
+RUN mkdir /srv/shiny-server/TransparenciaFinanciera/
+RUN cp -a ./* /srv/shiny-server/TransparenciaFinanciera/
+RUN cp shiny-server.conf /etc/shiny-server/
 
-# Shiny App in the current directory
-COPY . /srv/shiny-server/TransparenciaFinanciera
 
-# Config File
-COPY ./shiny-server.conf /etc/shiny-server/shiny-server.conf
+#Start the server with the container
+CMD ["/usr/bin/shiny-server"]
