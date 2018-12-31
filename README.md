@@ -1,8 +1,6 @@
 # Transparencia Financiera PR
 
--------- ~ Version en Español abajo ~ --------
-------------------------------------------
--------- ~ Spanish Version Below ~ --------
+-------- Version en Español abajo --------
 
 ## English
 
