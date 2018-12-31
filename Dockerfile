@@ -17,7 +17,6 @@ COPY ./data/*.csv /srv/shiny-server/TransparenciaFinanciera/data/
 COPY ./www/*.png /srv/shiny-server/TransparenciaFinanciera/www/
 COPY shiny-server.conf /etc/shiny-server/
 
-
 #Start the server with the container
 CMD ["/usr/bin/shiny-server"]
 

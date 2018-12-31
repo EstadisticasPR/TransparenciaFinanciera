@@ -1,10 +1,10 @@
 # Transparencia Financiera PR
 
-## Docker
-
-```bash
-sudo docker build -t transparencia . && sudo docker run -d -p 80:80 transparencia
-```
+------------------------------------------
+-------- Version en Español abajo --------
+------------------------------------------
+--------  Spanish Version Below   --------
+------------------------------------------
 
 ## English
 
@@ -19,24 +19,38 @@ First, you need to have the free software environment for statistical computing 
 Once in R, you need to run the following lines to install the necessary packages to be able to install the project:
 
 ```R
-install.packages(c("shiny", "shinyjs", "shinyalert", "shinydashboard", "tidyverse", "DT", "plotly"))
+install.packages(c("shiny", "tidyverse", "DT", "data.table", "rbokeh", "lubridate", "shinythemes"))
 ```
 
 ### Execute the App
 
-to execute the app locally you just have to clone the git repository and open the server.R file or the ui.R file in RStdio and execute. 
+To execute the app locally you have to clone the git repository and open the server.R file.
+
+```git
+git clone https://github.com/ian-flores/TransparenciaFinanciera
+cd TransparenciaFinanciera
+rstudio server.R
+```
+
+### Docker
+
+You can also execute the Docker image which already includes the R packages versions and a Flask app to get the most recent data.
+
+```bash
+docker build -t transparencia . && docker run -d -p 80:80 transparencia
+```
 
 ### Built With
 
 R, R Studio and the following packages: 
 
-* shiny: 1.0.5
-* shinyjs: 1.0
-* shinyalert: 1.0
-* shinydashborad: 0.7.0
+* shiny: 1.2.0
 * tidyverse: 1.2.1
 * DT: 0.4
-* plotly: 4.7.1
+* data.table: 1.11.8 
+* rbokeh: 0.5.0
+* lubridate: 1.7.4
+* shinythemes: 1.1.2
 
 ### Contributing
 
@@ -44,9 +58,7 @@ You can contribute by writing a pull request or contacting webmaster@estadistica
 
 ### Authors
 
-This shinydashboard was written by Ian Flores Siaca (https://github.com/ian-flores). 
-
-### License
+This app was written by Ian Flores Siaca (https://github.com/ian-flores). 
 
 ## Spanish
 
@@ -61,13 +73,42 @@ Primero, deberá instalar el ambiente de software para programacion estadistica 
 Luego, dentro de R, necesita ejecutar las siguientes lineas para instalar los paquetes necesarios para poder instalar el proyecto: 
 
 ```R
-install.packages(c("shiny", "shinyjs", "shinyalert", "shinydashboard", "tidyverse", "DT", "plotly"))
+install.packages(c("shiny", "tidyverse", "DT", "data.table", "rbokeh", "lubridate", "shinythemes"))
 ```
 
 ### Ejecutar la aplicacion 
 
-Para ejecutar la aplicacion en un ambiente local 
+Para ejecutar la aplicacion localmente tiene que clonar el repositorio y abrir el archivo server.R
+
+```git
+git clone https://github.com/ian-flores/TransparenciaFinanciera
+cd TransparenciaFinanciera
+rstudio server.R
+```
+### Docker
+
+Tambien puede ejecutar la imagen Docker, la cual incluye las dependencias necesarias y una aplicacion de Flask para obtener los
+datos mas recientes. 
+
+```bash
+docker build -t transparencia . && docker run -d -p 80:80 transparencia
+```
 ### Herramientas de Desarrollo
+
+R, Rstudio y los siguientes paquetes:
+
+- shiny: 1.2.0
+- tidyverse: 1.2.1
+- DT: 0.4
+- data.table: 1.11.8
+- rbokeh: 0.5.0
+- lubridate: 1.7.4
+- shinythemes: 1.1.2
+
 ### Para Contribuir
+
+Si quiere contibuir puede someter un pull request o escribir a webmaster@estadisticas.pr
+
 ### Autores
-### Licensia
+
+Este app fue escrito por Ian Flores Siaca (https://github.com/ian-flores)
